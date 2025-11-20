@@ -13,5 +13,3 @@ export interface Note {
   createdAt: Date
   updatedAt: Date
 }
-
-export type NoteFormData = Pick<Note, 'title' | 'todos'>

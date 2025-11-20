@@ -1,0 +1,18 @@
+:root {
+  --background-color: #f0f5f8;
+  --background-card-color: #ffffff;
+  --text-primary-color: #0c0c0c;
+  --text-secondary-color: #414141;
+  --text-size-sm: 14px;
+  --text-size-md: 20px;
+  --text-size-lg: 24px;
+  --text-size-xl: 32px;
+  --text-size-2xl: 40px;
+  --text-size-3xl: 48px;
+}
+
+[data-theme="dark"] {
+  --background-color: #27094e;
+  --text-primary-color: #0C0C0C;
+  --text-secondary-color: #0C0C0C;
+}
