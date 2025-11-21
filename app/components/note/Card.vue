@@ -4,10 +4,10 @@
       <h3 class="note-card__title">{{ note.title }}</h3>
       <div class="note-card__actions">
         <UiButton variant="default" size="sm" @click.stop="editNote">
-          ✏️
+          <UiIconEdit currentColor="#fff" width="24" height="24" />
         </UiButton>
         <UiButton variant="danger" size="sm" @click.stop="confirmDelete">
-          🗑️
+          <UiIconDelete currentColor="#fff" width="24" height="24" />
         </UiButton>
       </div>
     </div>
@@ -88,7 +88,7 @@ const formatDate = (date: Date) => {
   padding: 1.5rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  max-width: 320px;
+  width: 100%;
   
   &:hover {
     transform: translateY(-2px);
@@ -98,15 +98,19 @@ const formatDate = (date: Date) => {
   &__header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 1rem;
   }
   
   &__title {
     margin: 0;
     color: var(--text-primary);
-    font-size: 1.1rem;
+    font-size: var(--font-size-lg);
     line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
   
   &__actions {

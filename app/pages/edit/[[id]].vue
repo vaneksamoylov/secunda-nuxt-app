@@ -2,18 +2,20 @@
   <div class="note-editor">
     <div class="note-editor__button-container">
       <UiButton variant="default" class="note-editor__button-back" @click="goBack">Назад</UiButton>
-      <UiButton variant="apply" class="note-editor__button-save" @click="saveNote">Сохранить</UiButton>
+      <UiButton variant="apply" class="note-editor__button-save" @click="saveNote">
+        <UiIconSave currentColor="#fff" width="24" height="24" />
+      </UiButton>
       <UiButton variant="danger" class="note-editor__button-save" :disabled="!route.params.id" @click="resetToInitialState">
         Отменить изменения
       </UiButton>
       <UiButton variant="danger" size="sm" @click="confirmDelete" :disabled="!route.params.id">
-        🗑️
+        <UiIconDelete currentColor="#fff" width="24" height="24" />
       </UiButton>
-      <UiButton class="note-editor__button-undo" :disabled="!noteEditStore.canUndo && !route.params.id" @click="noteEditStore.undo">
-        Undo
+      <UiButton class="note-editor__button-undo" :disabled="!noteEditStore.canUndo" @click="noteEditStore.undo">
+        <UiIconUndo currentColor="#fff" />
       </UiButton>
-      <UiButton class="note-editor__button-redo" :disabled="!noteEditStore.canRedo && !route.params.id" @click="noteEditStore.redo">
-        Redo
+      <UiButton class="note-editor__button-redo" :disabled="!noteEditStore.canRedo" @click="noteEditStore.redo">
+        <UiIconRedo currentColor="#fff" />
       </UiButton>
     </div>
     <div v-if="newLocalNote" class="editor-container">
@@ -200,27 +202,28 @@ function saveNote() {
 }
 
 function goBack() {
-  if (noteEditStore.history.length > 0) {
-    showModal.value = true;
-    modalText.value = 'У вас есть несохраненные изменения. Вы уверены, что хотите вернуться назад?';
-    modalButtons.value = [
-      {
-        text: 'Да',
-        action: () => {
-          closeModal();
-          navigateTo('/');
-        },
-      },
-      {
-        text: 'Отмена',
-        action: () => {
-          closeModal();
-        },
-      },
-    ];
-    return;
-  }
-  router.back();
+  // if (noteEditStore.history.length > 0) {
+  //   showModal.value = true;
+  //   modalText.value = 'У вас есть несохраненные изменения. Вы уверены, что хотите вернуться назад?';
+  //   modalButtons.value = [
+  //     {
+  //       text: 'Да',
+  //       action: () => {
+  //         closeModal();
+  //         navigateTo('/');
+  //       },
+  //     },
+  //     {
+  //       text: 'Отмена',
+  //       action: () => {
+  //         closeModal();
+  //       },
+  //     },
+  //   ];
+  //   return;
+  // }
+
+  navigateTo('/');
 }
 
 function resetToInitialState() {

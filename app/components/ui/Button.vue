@@ -69,5 +69,11 @@ const handleClick = (event: MouseEvent) => {
     opacity: 0.6;
     cursor: not-allowed;
   }
+
+  @media (max-width: 767px) {
+    &--sm { padding: 4px 6px; font-size: 14px; }
+    &--md { padding: 6px 8px; font-size: 16px; }
+    &--lg { padding: 8px 12px; font-size: 18px; }
+  }
 }
 </style>
