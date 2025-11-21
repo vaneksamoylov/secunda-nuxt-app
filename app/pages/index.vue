@@ -65,7 +65,7 @@ function closeModal() {
   display: flex;
   flex-direction: column;
   flex: 1;
-  background-color: var(--bg-primary);
+  background-color: var(--background-color);
   height: 100%;
   min-height: 0;
 }

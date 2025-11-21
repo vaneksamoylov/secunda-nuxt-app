@@ -48,7 +48,7 @@ const checkboxValue = ref(props.todo.done);
 const textValue = ref(props.todo.text);
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .todo-item {
   display: flex;
   align-items: center;
@@ -57,10 +57,10 @@ const textValue = ref(props.todo.text);
   padding: 8px;
   border-radius: 4px;
   transition: background-color 0.2s;
-}
 
-.todo-item:hover {
-  background-color: #f8f9fa;
+  &:hover {
+    background-color: #f8f9fa;
+  }
 }
 
 .todo-checkbox {
@@ -76,16 +76,16 @@ const textValue = ref(props.todo.text);
   border-radius: 4px;
   outline: none;
   transition: border-color 0.3s;
-}
 
-.todo-input:focus {
-  border-color: #007bff;
-}
+  &:focus {
+    border-color: #007bff;
+  }
 
-.todo-input.completed {
-  text-decoration: line-through;
-  color: #6c757d;
-  background-color: #f8f9fa;
+  &.completed {
+    text-decoration: line-through;
+    color: #6c757d;
+    background-color: #f8f9fa;
+  }
 }
 
 .delete-todo-btn {
@@ -101,9 +101,9 @@ const textValue = ref(props.todo.text);
   justify-content: center;
   font-size: 16px;
   transition: background-color 0.2s;
-}
 
-.delete-todo-btn:hover {
-  background: #c82333;
+  &:hover {
+    background: #c82333;
+  }
 }
 </style>
