@@ -7,8 +7,8 @@
       />
   </div>
 
-  <UiModal v-if="showModal" :text="modalText" @close="showModal = false">
-    <UiButton v-for="btn in modalButtons" @click="btn.action()">{{
+  <UiModal v-if="showModal" :text="modalText" @close="closeModal">
+    <UiButton v-for="btn in modalButtons" :variant="btn.variant" @click="btn.action()">{{
       btn.text
     }}</UiButton>
   </UiModal>
@@ -17,7 +17,7 @@
 <script setup lang="ts">
 const notesStore = useNotesStore()
 const showModal = ref(false)
-const modalText = ref('Вы уверены, что хотите удалить?')
+const modalText = ref()
 const modalButtons = ref()
 
 onMounted(() => {
@@ -33,23 +33,32 @@ function editNote(id: string) {
 function confirmDeleteNote(id: string) {
   showModal.value = true
 
+  modalText.value = 'Вы уверены, что хотите удалить?'
   modalButtons.value = [
     {
         text: 'Удалить',
+        variant: 'danger',
         action: () => {
           notesStore.deleteNote(id)
-          showModal.value = false
+          closeModal()
         },
       },
       {
         text: 'Отмена',
+        variant: 'default',
         action: () => {
-          showModal.value = false
+          closeModal()
         },
       },
   ]
 }
 
+function closeModal() {
+  showModal.value = false
+
+  modalText.value = ''
+  modalButtons.value = []
+}
 </script>
 
 <style scoped lang="scss">

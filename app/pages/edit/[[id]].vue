@@ -160,14 +160,7 @@ function saveNote() {
   if (newLocalNote.value) {
     const noteToSave = deepClone(newLocalNote.value);
 
-    console.log('noteToSave: ', noteToSave);
-
-
     if (noteToSave.id === '' && noteToSave.title !== '') {
-      console.log("noteToSave.id === '' && noteToSave.title !== ''")
-      console.log("noteToSave.id:", noteToSave.id)
-      console.log("noteToSave.title:", noteToSave.title)
-
       noteToSave.id = notesStore.generateId();
       noteToSave.updatedAt = new Date();
       notesStore.createNote(noteToSave);
@@ -175,10 +168,6 @@ function saveNote() {
     }
 
     if (noteToSave.id === '' && noteToSave.title === '') {
-      console.log("noteToSave.id !== '' && noteToSave.title === ''")
-      console.log("noteToSave.id:", noteToSave.id)
-      console.log("noteToSave.title:", noteToSave.title)
-      console.log('open modal')
       showModal.value = true;
 
       modalText.value = 'Заметка пустая. Добавьте заголовок, чтобы сохранить заметку.';
@@ -200,13 +189,12 @@ function saveNote() {
   }
 
   if (newLocalNote.value !== initialNote.value) {
-    console.log("loadCurrentNote")
     loadCurrentNote();
   }
 }
 
 function goBack() {
-  if (initialNote.value !== newLocalNote.value) {
+  if (JSON.stringify(initialNote.value) !== JSON.stringify(newLocalNote.value)) {
     showModal.value = true;
     modalText.value = 'У вас есть несохраненные изменения. Вы уверены, что хотите вернуться назад?';
     modalButtons.value = [
@@ -277,6 +265,7 @@ const handleEnterPress = (event: Event) => {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
   }
 }
 
