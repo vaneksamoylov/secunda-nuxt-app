@@ -23,14 +23,28 @@ const props = defineProps<{
   todo: Todo
 }>()
 
+watch(
+  props,
+  () => {
+    if (textValue.value != props.todo.text) {
+      textValue.value = props.todo.text;
+    }
+
+    if (checkboxValue.value != props.todo.done) {
+      checkboxValue.value = props.todo.done;
+    }
+  },
+  { deep: true }
+);
+
 const emit = defineEmits<{
   'remove': []
   'updateCheckbox': [value: boolean]
   'updateText': [value: string]
 }>()
 
-const checkboxValue = ref(props.todo.done)
-const textValue = ref(props.todo.text)
+const checkboxValue = ref(props.todo.done);
+const textValue = ref(props.todo.text);
 </script>
 
 <style scoped>

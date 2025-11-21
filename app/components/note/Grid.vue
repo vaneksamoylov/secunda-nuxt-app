@@ -33,6 +33,7 @@ defineEmits<{
 const notesStore = useNotesStore()
 
 const createNote = () => {
+  // TODO: НЕ создавать новую заметку, ID не передавать. Если ID нулевой, на самом экране это хендлить
   const newNote = notesStore.createNoteAndReturnId()
   navigateTo(`/edit/${newNote}`)
 }

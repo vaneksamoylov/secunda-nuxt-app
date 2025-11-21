@@ -6,13 +6,13 @@
       <button class="note-editor__button-save" @click="resetToInitialState">
         Отменить изменения
       </button>
-      <button class="note-editor__button-undo">⎌</button>
-      <button class="note-editor__button-redo">Redo</button>
+      <button class="note-editor__button-undo" @click="noteEditStore.undo">Undo</button>
+      <button class="note-editor__button-redo" @click="noteEditStore.redo">Redo</button>
     </div>
-    <div v-if="localNote" class="editor-container">
+    <div v-if="newLocalNote" class="editor-container">
       <!-- Заголовок заметки -->
       <input
-        v-model="localNote.title"
+        v-model="newLocalNote.title"
         type="text"
         placeholder="Название заметки"
         class="title-input"
@@ -22,7 +22,7 @@
       <div class="todos-section">
         <h3>Задачи:</h3>
         <TodoItem
-          v-for="(todo, index) in localNote.todos"
+          v-for="(todo, index) in todos"
           :key="todo.id"
           class="todo-item"
           :todo="todo"
@@ -34,8 +34,7 @@
           "
           @updateText="
             (value) => {
-              console.log('val: ', value);
-              todo.text = value;
+              noteEditStore.setTodoText(index, value);
             }
           "
         ></TodoItem>
@@ -53,11 +52,14 @@
 const route = useRoute();
 const router = useRouter();
 const notesStore = useNotesStore();
+const noteEditStore = useNoteEditStore();
 
 // Реактивная копия заметки для редактирования
-const localNote = ref<Note | null>(null);
 const initialNote = ref<Note | null>(null);
 const hasChanges = ref(false);
+
+const newLocalNote = storeToRefs(noteEditStore).localNote;
+const todos = ref<Array<Todo>>([]);
 
 const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
@@ -66,9 +68,9 @@ onMounted(() => {
   notesStore.loadFromStorage();
   loadCurrentNote();
   // Сохраняем начальное состояние для сравнения изменений
-  initialNote.value = localNote.value;
-  console.log("localNote:", localNote.value);
-  console.log("Initial note:", initialNote.value);
+  // initialNote.value = localNote.value;
+  // console.log("localNote:", localNote.value);
+  // console.log("Initial note:", initialNote.value);
 });
 
 // Загружаем текущую заметку когда загрузилось хранилище или изменился ID
@@ -79,63 +81,42 @@ watchEffect(() => {
 });
 
 watch(
-  localNote,
+  newLocalNote,
   () => {
-    if (localNote.value !== initialNote.value) {
-      hasChanges.value = true;
-      console.log("Внесены изменения!");
-    } else {
-      hasChanges.value = false;
-    }
+    todos.value = newLocalNote.value?.todos ?? [];
   },
   { deep: true }
 );
 
-
 function loadCurrentNote() {
   const note = notesStore.getNoteById(route.params.id as string);
   if (note) {
-    // Создаем глубокую копию для редактирования
-    localNote.value = deepClone(note);
-    // Сохраняем глубокую копию для начального состояния
-    initialNote.value = deepClone(note);
+    noteEditStore.loadCurrentNote(note);
+    initialNote.value = note;
   } else {
-    localNote.value = null;
-    initialNote.value = null;
+    // TODO: ошибка
   }
 }
 
 function addTodo() {
-  if (localNote.value) {
-    const newTodo: Todo = {
-      id: String(Date.now()), // Простой способ генерации ID
-      text: "",
-      done: false,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    localNote.value.todos.push(newTodo);
-    saveNote();
-  }
+  noteEditStore.addTodo();
 }
 
 function removeTodo(index: number) {
-  if (localNote.value) {
-    localNote.value.todos.splice(index, 1);
-    saveNote();
-  }
+  noteEditStore.removeTodo(index);
 }
 
 function saveNote() {
-  if (localNote.value) {
+  if (newLocalNote.value) {
+    const noteToSave = deepClone(newLocalNote.value);
     // Обновляем время изменения
-    localNote.value.updatedAt = new Date();
+    noteToSave.updatedAt = new Date();
 
     // Сохраняем в хранилище
-    notesStore.updateNote(localNote.value.id, localNote.value);
+    notesStore.updateNote(noteToSave.id, noteToSave);
 
-    if (localNote.value !== initialNote.value) {
-      initialNote.value = localNote.value;
+    if (newLocalNote.value !== initialNote.value) {
+      loadCurrentNote();
     }
   }
 }
@@ -155,16 +136,7 @@ function goBack() {
 }
 
 function resetToInitialState() {
-  if (initialNote.value) {
-    // Временно обнуляем, чтобы вызвать реактивность
-    localNote.value = null;
-    
-    // Используем nextTick для гарантированного обновления DOM
-    nextTick(() => {
-      localNote.value = deepClone(initialNote.value);
-      console.log("Reset completed with new reference");
-    });
-  }
+  loadCurrentNote();
 }
 </script>
 

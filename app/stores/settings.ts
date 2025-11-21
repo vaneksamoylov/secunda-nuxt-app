@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'settings'
 
-export const settingsStore = defineStore('settings', () => {
+export const settingsStore = defineStore(STORAGE_KEY, () => {
   const appTheme = ref<AppTheme>('light')
 
   // загружает заметки из localStorage при инициализации

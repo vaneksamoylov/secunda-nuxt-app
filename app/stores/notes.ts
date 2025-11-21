@@ -1,17 +1,16 @@
 const STORAGE_KEY = 'notes'
 
-export const useNotesStore = defineStore('notes', () => {
+export const useNotesStore = defineStore(STORAGE_KEY, () => {
   const notes = ref<Note[]>([])
   const nextId = ref(1)
   const isLoaded = ref(false)
-  
+
   // загружает заметки из localStorage при инициализации
   function loadFromStorage(): void {
-    // Всегда проверяем client-side
     if (import.meta.client) {
       try {
         const stored = localStorage.getItem(STORAGE_KEY)
-        
+
         if (stored) {
           const parsed = JSON.parse(stored)
           notes.value = parsed.map((note: Note) => ({
@@ -39,7 +38,6 @@ export const useNotesStore = defineStore('notes', () => {
     return notes.value.find(note => note.id === id)
   }
 
-  // Автоматически сохраняем при изменениях
   function saveToStorage(): void {
     if (import.meta.client) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(notes.value))

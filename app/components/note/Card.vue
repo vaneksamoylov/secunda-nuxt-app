@@ -46,6 +46,7 @@ interface Props {
   note: Note
 }
 
+// TODO: Заменить на Note
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
@@ -75,6 +76,7 @@ const confirmDelete = () => {
 }
 
 const formatDate = (date: Date) => {
+  // TODO: Убрать форматтинг
   return new Date(date).toLocaleDateString('ru-RU')
 }
 </script>
