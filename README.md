@@ -1,75 +1,97 @@
-# Nuxt Minimal Starter
+# Тестовое задание на позицию Frontend разработчик в компанию Secunda
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Техническое задание
 
-## Setup
+Средствами Nuxt.js3/4 (composition api) реализуйте небольшое SPA
+приложение для заметок.
 
-Make sure to install dependencies:
+Каждая заметка имеет название и список задач (todo list), далее - Todo.
 
-```bash
-# npm
-npm install
+Каждый пункт Todo состоит из чекбокса и относящейся к нему текстовой
+подписи.
 
-# pnpm
-pnpm install
+Приложение состоит всего из 2х страниц.
 
-# yarn
-yarn install
+### Главная страница
 
-# bun
-bun install
-```
+На главной странице отображается список всех заметок. Для каждой заметки
+отображается заголовок и Todo, сокращенный до нескольких пунктов, без
+возможности отмечать. Действия на главной:
 
-## Development Server
+• перейти к созданию новой заметки
 
-Start the development server on `http://localhost:3000`:
+• перейти к изменению
 
-```bash
-# npm
-npm run dev
+• удалить (необходимо подтверждение)
 
-# pnpm
-pnpm dev
+### Страница изменения
 
-# yarn
-yarn dev
+Страница изменения заметки позволяет определенную заметку отредактировать, отметить пункты Todo, а после сохранить изменения.
 
-# bun
-bun run dev
-```
+Действия с заметкой:
 
-## Production
+• сохранить изменения
 
-Build the application for production:
+• отменить редактирование (необходимо подтверждение)
 
-```bash
-# npm
-npm run build
+• удалить (необходимо подтверждение)
 
-# pnpm
-pnpm build
+• отменить внесенное изменение (должно работать как ctrl+z)
 
-# yarn
-yarn build
+• повторить отмененное изменение Действия с пунктами Todo (как shift+ctrl+z):
 
-# bun
-bun run build
-```
+• добавить
 
-Locally preview production build:
+• удалить
 
-```bash
-# npm
-npm run preview
+• отредактировать текст
 
-# pnpm
-pnpm preview
+• отметить как выполненный
 
-# yarn
-yarn preview
+## Информация
 
-# bun
-bun run preview
-```
+Данный проект реализован в рамках тестового задания на вакансию фронтенд-разработчика в компанию [its.agency](https://its.agency/).
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Выполнен на чистом JS по технологии Web-components, использовав в разработке логической части только библиотеки Swiperjs и Axios.
+
+Для удобства разработки сконфигурирован live server, а также автоматическая компиляция scss -> css при сохранении .scss 
+
+## Установка для разработки
+
+1. Клонирование репозитория
+
+```git clone https://github.com/vaneksamoylov/secunda-nuxt-app.git```
+
+2. Переход в директорию проекта
+
+```cd secunda-nuxt-app```
+
+3. Установка зависимостей
+
+```npm install```
+
+4. Для запуска локального сервера
+
+```npm run dev```
+
+## Установка для production
+
+1. Клонирование репозитория
+
+```git clone https://github.com/vaneksamoylov/secunda-nuxt-app.git```
+
+2. Переход в директорию проекта
+
+```cd secunda-nuxt-app```
+
+3. Запуск Docker
+
+```docker-compose up```
+
+## Tech
+
+- Nuxt4
+- Pinia
+- @vueuse/core
+- TypeScript
+- Sass / Scss

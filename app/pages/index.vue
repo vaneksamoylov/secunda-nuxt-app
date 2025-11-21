@@ -6,10 +6,19 @@
         @delete="confirmDeleteNote"
       />
   </div>
+
+  <UiModal v-if="showModal" :text="modalText" @close="showModal = false">
+    <UiButton v-for="btn in modalButtons" @click="btn.action()">{{
+      btn.text
+    }}</UiButton>
+  </UiModal>
 </template>
 
 <script setup lang="ts">
 const notesStore = useNotesStore()
+const showModal = ref(false)
+const modalText = ref('Вы уверены, что хотите удалить?')
+const modalButtons = ref()
 
 onMounted(() => {
   notesStore.loadFromStorage()
@@ -22,7 +31,23 @@ function editNote(id: string) {
 }
 
 function confirmDeleteNote(id: string) {
-  notesStore.deleteNote(id)
+  showModal.value = true
+
+  modalButtons.value = [
+    {
+        text: 'Удалить',
+        action: () => {
+          notesStore.deleteNote(id)
+          showModal.value = false
+        },
+      },
+      {
+        text: 'Отмена',
+        action: () => {
+          showModal.value = false
+        },
+      },
+  ]
 }
 
 </script>

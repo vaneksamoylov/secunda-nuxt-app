@@ -15,7 +15,7 @@
       @input="emit('updateText', textValue)"
       @keyup.enter="emit('enterPress', $event)"
     />
-    <button @click="emit('remove')" class="delete-todo-btn">×</button>
+    <UiButton variant="danger" @click="emit('remove')">X</UiButton>
   </div>
 </template>
 

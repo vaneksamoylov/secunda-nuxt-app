@@ -6,7 +6,7 @@ const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 export const useNoteEditStore = defineStore(STORAGE_KEY, () => {
   const localNote = ref<Note | null>(null);
-  const { history, undo, redo, canUndo, canRedo } = useRefHistory(localNote, {
+  const history = useRefHistory(localNote, {
     deep: true,
     capacity: 50,
   });
@@ -40,5 +40,5 @@ export const useNoteEditStore = defineStore(STORAGE_KEY, () => {
     }
   }
 
-  return { localNote, loadCurrentNote, addTodo, removeTodo, setTodoText, undo, redo, canUndo, canRedo, history };
+  return { localNote, loadCurrentNote, addTodo, removeTodo, setTodoText, history };
 });
