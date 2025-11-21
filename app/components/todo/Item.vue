@@ -13,6 +13,7 @@
       class="todo-input"
       :class="{ completed: todo.done }"
       @input="emit('updateText', textValue)"
+      @keyup.enter="emit('enterPress', $event)"
     />
     <button @click="emit('remove')" class="delete-todo-btn">×</button>
   </div>
@@ -41,6 +42,7 @@ const emit = defineEmits<{
   'remove': []
   'updateCheckbox': [value: boolean]
   'updateText': [value: string]
+  'enterPress': [event: KeyboardEvent]
 }>()
 
 const checkboxValue = ref(props.todo.done);

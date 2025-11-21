@@ -1,6 +1,6 @@
 <template>
     <div class="modal">
-        <button class="modal__close-button">X</button>
+        <button class="modal__close-button" @click="$emit('close')">X</button>
         <div class="modal__text">
             {{ text }}
         </div>
@@ -16,6 +16,9 @@
 defineProps<{
     text: string
 }>()
+defineEmits<{
+    close: []
+}>()
 </script>
 
 <style lang="scss" scoped>
@@ -30,7 +33,7 @@ defineProps<{
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     width: 90%;
-    max-width: 400px;
+    max-width: 800px;
     
     &__close-button {
         position: absolute;
@@ -62,7 +65,7 @@ defineProps<{
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.7);
         z-index: 999;
     }
 }

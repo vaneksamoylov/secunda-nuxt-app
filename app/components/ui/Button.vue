@@ -10,13 +10,13 @@
 
 <script setup lang="ts">
 interface Props {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'rounded' | 'purple'
+  variant?: 'default' | 'transparent' | 'apply' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  variant: 'primary',
+  variant: 'default',
   size: 'md',
   disabled: false
 })
@@ -37,53 +37,28 @@ const handleClick = (event: MouseEvent) => {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 700;
   transition: all 0.2s ease;
+  text-transform: lowercase;
   
-  &--primary {
-    background-color: var(--primary-color);
-    color: white;
-    
-    &:hover:not(.btn--disabled) {
-      background-color: var(--primary-dark);
-    }
+  &--default {
+    background-color: var(--default-button-color);
+    color: var(--default-text-color);
+  }
+
+  &--transparent {
+    background-color: var(--transparent-button-color);
+    color: var(--transparent-text-color);
+  }
+
+  &--apply {
+    background-color: var(--apply-button-color);
+    color: var(--apply-text-color);
   }
   
   &--danger {
-    background-color: var(--error-color);
-    color: white;
-    
-    &:hover:not(.btn--disabled) {
-      background-color: var(--error-dark);
-    }
-  }
-
-  &--rounded {
-    background-color: var(--primary-color);
-    color: white;
-    border-radius: 100%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    padding: 0;
-
-    &:hover:not(.btn--disabled) {
-      background-color: var(--primary-dark);
-    }
-  }
-
-  &--purple {
-    background-color: #d715b0;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-weight: 600;
-    text-transform: uppercase;
+    background-color: var(--danger-button-color);
+    color: var(--danger-text-color);
   }
   
   &--sm { padding: 8px 12px; font-size: 14px; }

@@ -3,10 +3,10 @@
     <div class="note-card__header">
       <h3 class="note-card__title">{{ note.title }}</h3>
       <div class="note-card__actions">
-        <UiButton variant="ghost" size="sm" @click.stop="editNote">
+        <UiButton variant="default" size="sm" @click.stop="editNote">
           ✏️
         </UiButton>
-        <UiButton variant="ghost" size="sm" @click.stop="confirmDelete">
+        <UiButton variant="danger" size="sm" @click.stop="confirmDelete">
           🗑️
         </UiButton>
       </div>
