@@ -1,8 +1,8 @@
 <template>
   <div class="notes-container">
     <NoteCard
-      v-for="note in notes"
-      :key="note.id"
+      v-for="(note, index) in notes"
+      :key="index"
       :note="note"
       @edit="$emit('edit', $event)"
       @delete="$emit('delete', $event)"
@@ -11,10 +11,6 @@
     <div v-if="notes.length === 0" class="empty-state">
       <p>У вас пока нет заметок</p>
       <p class="empty-state__hint">Создайте первую заметку, нажав на кнопку выше</p>
-    </div>
-
-    <div class="notes-container__button-container">
-      <UiButton variant="purple" size="lg" @click="createNote">создать заметку</UiButton>
     </div>
   </div>
 </template>
@@ -29,14 +25,6 @@ defineEmits<{
   edit: [id: string]
   delete: [id: string]
 }>()
-
-const notesStore = useNotesStore()
-
-const createNote = () => {
-  // TODO: НЕ создавать новую заметку, ID не передавать. Если ID нулевой, на самом экране это хендлить
-  const newNote = notesStore.createNoteAndReturnId()
-  navigateTo(`/edit/${newNote}`)
-}
 </script>
 
 <style scoped lang="scss">
@@ -48,12 +36,6 @@ const createNote = () => {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
   align-content: start;
-
-  &__button-container {
-    position: fixed;
-    bottom: 80px;
-    right: 80px;
-  }
 }
 
 .empty-state {

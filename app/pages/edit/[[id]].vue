@@ -6,8 +6,12 @@
       <button class="note-editor__button-save" @click="resetToInitialState">
         Отменить изменения
       </button>
-      <button class="note-editor__button-undo" @click="noteEditStore.undo">Undo</button>
-      <button class="note-editor__button-redo" @click="noteEditStore.redo">Redo</button>
+      <button class="note-editor__button-undo" @click="noteEditStore.undo">
+        Undo
+      </button>
+      <button class="note-editor__button-redo" @click="noteEditStore.redo">
+        Redo
+      </button>
     </div>
     <div v-if="newLocalNote" class="editor-container">
       <!-- Заголовок заметки -->
@@ -46,6 +50,12 @@
       </div>
     </div>
   </div>
+
+  <UiModal v-if="showModal" :text="modalText">
+    <UiButton v-for="btn in modalButtons" @click="btn.action()">{{
+      btn.text
+    }}</UiButton>
+  </UiModal>
 </template>
 
 <script setup lang="ts">
@@ -53,6 +63,10 @@ const route = useRoute();
 const router = useRouter();
 const notesStore = useNotesStore();
 const noteEditStore = useNoteEditStore();
+const showModal = ref(false);
+
+const modalText = ref('');
+const modalButtons = ref();
 
 // Реактивная копия заметки для редактирования
 const initialNote = ref<Note | null>(null);
@@ -65,12 +79,13 @@ const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
 // Загружаем данные при монтировании
 onMounted(() => {
-  notesStore.loadFromStorage();
-  loadCurrentNote();
-  // Сохраняем начальное состояние для сравнения изменений
-  // initialNote.value = localNote.value;
-  // console.log("localNote:", localNote.value);
-  // console.log("Initial note:", initialNote.value);
+  if (route.params.id) {
+    notesStore.loadFromStorage();
+    loadCurrentNote();
+  } else {
+    newLocalNote.value = notesStore.createEmptyNote();
+    addTodo()
+  }
 });
 
 // Загружаем текущую заметку когда загрузилось хранилище или изменился ID
@@ -109,15 +124,49 @@ function removeTodo(index: number) {
 function saveNote() {
   if (newLocalNote.value) {
     const noteToSave = deepClone(newLocalNote.value);
-    // Обновляем время изменения
-    noteToSave.updatedAt = new Date();
 
-    // Сохраняем в хранилище
-    notesStore.updateNote(noteToSave.id, noteToSave);
+    console.log('noteToSave: ', noteToSave);
 
-    if (newLocalNote.value !== initialNote.value) {
-      loadCurrentNote();
+
+    if (noteToSave.id === '' && noteToSave.title !== '') {
+      console.log("noteToSave.id === '' && noteToSave.title !== ''")
+      console.log("noteToSave.id:", noteToSave.id)
+      console.log("noteToSave.title:", noteToSave.title)
+
+      noteToSave.id = notesStore.generateId();
+      noteToSave.updatedAt = new Date();
+      notesStore.createNote(noteToSave);
+      navigateTo(`/edit/${noteToSave.id}`);
     }
+
+    if (noteToSave.id === '' && noteToSave.title === '') {
+      console.log("noteToSave.id !== '' && noteToSave.title === ''")
+      console.log("noteToSave.id:", noteToSave.id)
+      console.log("noteToSave.title:", noteToSave.title)
+      console.log('open modal')
+      showModal.value = true;
+
+      modalText.value = 'Заметка пустая. Добавьте заголовок, чтобы сохранить заметку.';
+      modalButtons.value = [
+        {
+          text: 'Ок',
+          action: () => {
+            showModal.value = false;
+          },
+        },
+      ];
+
+      return;
+    }
+
+    if (noteToSave.id !== '' && noteToSave.title !== '') {
+      notesStore.updateNote(noteToSave.id, noteToSave);
+    }
+  }
+
+  if (newLocalNote.value !== initialNote.value) {
+    console.log("loadCurrentNote")
+    loadCurrentNote();
   }
 }
 

@@ -34,7 +34,6 @@ export const useNotesStore = defineStore(STORAGE_KEY, () => {
   }
 
   function getNoteById(id: string): Note | undefined {
-    console.log('Поиск заметки', id, 'в массиве:', notes.value)
     return notes.value.find(note => note.id === id)
   }
 
@@ -47,7 +46,7 @@ export const useNotesStore = defineStore(STORAGE_KEY, () => {
   function createEmptyNote(): Note {
     const now = new Date()
     return {
-      id: String(nextId.value++),
+      id: '',
       title: '',
       todos: [],
       createdAt: now,
@@ -55,7 +54,8 @@ export const useNotesStore = defineStore(STORAGE_KEY, () => {
     }
   }
 
-  function addNote(note: Note): void {
+  function addNote(): void {
+    const note = createEmptyNote()
     notes.value.push(note)
     saveToStorage()
   }
@@ -73,19 +73,25 @@ export const useNotesStore = defineStore(STORAGE_KEY, () => {
     }
   }
 
-  function createNoteAndReturnId(): string {
-    const note = createEmptyNote()
-    addNote(note)
-    return note.id
+  function generateId(): string {
+    return (nextId.value++).toString()
+  }
+
+  function createNote(note: Note) {
+    notes.value.push(note)
+    saveToStorage()
   }
 
   return {
+    addNote,
+    createEmptyNote,
+    createNote,
     notes,
     isLoaded,
     loadFromStorage,
-    createNoteAndReturnId,
     deleteNote,
     updateNote,
-    getNoteById
+    getNoteById,
+    generateId,    
   }
 })

@@ -32,12 +32,6 @@
         + еще {{ note.todos.length - 3 }} задач
       </div>
     </div>
-    
-    <div class="note-card__meta">
-      <span class="note-card__date">
-        {{ formatDate(note.updatedAt) }}
-      </span>
-    </div>
   </div>
 </template>
 
@@ -64,15 +58,21 @@ const hasMoreTodos = computed(() =>
 )
 
 const handleClick = () => {
-  emit('click', props.note.id)
+  if (props.note.id) {
+    emit('click', props.note.id)
+  }
 }
 
 const editNote = () => {
-  emit('edit', props.note.id)
+  if (props.note.id) {
+    emit('edit', props.note.id)
+  }
 }
 
 const confirmDelete = () => {
-  emit('delete', props.note.id)
+  if (props.note.id) {
+    emit('delete', props.note.id)
+  }
 }
 
 const formatDate = (date: Date) => {

@@ -22,7 +22,7 @@ function editNote(id: string) {
 }
 
 function confirmDeleteNote(id: string) {
-  // Logic to confirm and delete note
+  notesStore.deleteNote(id)
 }
 
 </script>
