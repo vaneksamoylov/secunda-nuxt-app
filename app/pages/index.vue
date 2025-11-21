@@ -1,63 +1,62 @@
 <template>
   <div class="home-page">
-      <NoteGrid
-        :notes="notes"
-        @edit="editNote"
-        @delete="confirmDeleteNote"
-      />
+    <NoteGrid :notes="notes" @edit="editNote" @delete="confirmDeleteNote" />
   </div>
 
   <UiModal v-if="showModal" :text="modalText" @close="closeModal">
-    <UiButton v-for="btn in modalButtons" :variant="btn.variant" @click="btn.action()">{{
-      btn.text
-    }}</UiButton>
+    <UiButton
+      v-for="btn in modalButtons"
+      :variant="btn.variant"
+      @click="btn.action()"
+      >{{ btn.text }}</UiButton
+    >
   </UiModal>
 </template>
 
 <script setup lang="ts">
-const notesStore = useNotesStore()
-const showModal = ref(false)
-const modalText = ref()
-const modalButtons = ref()
+const notesStore = useNotesStore();
+const showModal = ref(false);
+const modalText = ref();
+const modalButtons = ref();
 
 onMounted(() => {
-  notesStore.loadFromStorage()
-})
+  notesStore.loadFromStorage();
+});
 
-const notes = computed(() => notesStore.notes)
+const notes = computed(() => notesStore.notes);
 
 function editNote(id: string) {
-  navigateTo(`/edit/${id}`)
+  navigateTo(`/edit/${id}`);
 }
 
 function confirmDeleteNote(id: string) {
-  showModal.value = true
+  showModal.value = true;
 
-  modalText.value = 'Вы уверены, что хотите удалить?'
+  modalText.value = "Вы уверены, что хотите удалить?";
   modalButtons.value = [
     {
-        text: 'Удалить',
-        variant: 'danger',
-        action: () => {
-          notesStore.deleteNote(id)
-          closeModal()
-        },
+      text: "Удалить",
+      variant: "danger",
+      action: () => {
+        notesStore.deleteNote(id);
+        closeModal();
       },
-      {
-        text: 'Отмена',
-        variant: 'default',
-        action: () => {
-          closeModal()
-        },
+    },
+    {
+      text: "Отмена",
+      variant: "default",
+      action: () => {
+        closeModal();
       },
-  ]
+    },
+  ];
 }
 
 function closeModal() {
-  showModal.value = false
+  showModal.value = false;
 
-  modalText.value = ''
-  modalButtons.value = []
+  modalText.value = "";
+  modalButtons.value = [];
 }
 </script>
 

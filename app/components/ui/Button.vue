@@ -1,6 +1,11 @@
 <template>
   <button
-    :class="['btn', `btn--${variant}`, `btn--${size}`, { 'btn--disabled': disabled }]"
+    :class="[
+      'btn',
+      `btn--${variant}`,
+      `btn--${size}`,
+      { 'btn--disabled': disabled },
+    ]"
     :disabled="disabled"
     @click="handleClick"
   >
@@ -10,26 +15,26 @@
 
 <script setup lang="ts">
 interface Props {
-  variant?: 'default' | 'transparent' | 'apply' | 'danger'
-  size?: 'sm' | 'md' | 'lg'
-  disabled?: boolean
+  variant?: "default" | "transparent" | "apply" | "danger";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  variant: 'default',
-  size: 'md',
-  disabled: false
-})
+  variant: "default",
+  size: "md",
+  disabled: false,
+});
 
 const emit = defineEmits<{
-  click: [event: MouseEvent]
-}>()
+  click: [event: MouseEvent];
+}>();
 
 const handleClick = (event: MouseEvent) => {
   if (!props.disabled) {
-    emit('click', event)
+    emit("click", event);
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
@@ -40,7 +45,7 @@ const handleClick = (event: MouseEvent) => {
   font-weight: 700;
   transition: all 0.2s ease;
   text-transform: lowercase;
-  
+
   &--default {
     background-color: var(--default-button-color);
     color: var(--default-text-color);
@@ -55,25 +60,43 @@ const handleClick = (event: MouseEvent) => {
     background-color: var(--apply-button-color);
     color: var(--apply-text-color);
   }
-  
+
   &--danger {
     background-color: var(--danger-button-color);
     color: var(--danger-text-color);
   }
-  
-  &--sm { padding: 8px 12px; font-size: 14px; }
-  &--md { padding: 12px 16px; font-size: 16px; }
-  &--lg { padding: 16px 24px; font-size: 18px; }
-  
+
+  &--sm {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  &--md {
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+  &--lg {
+    padding: 16px 24px;
+    font-size: 18px;
+  }
+
   &--disabled {
     opacity: 0.6;
     cursor: not-allowed;
   }
 
   @media (max-width: 767px) {
-    &--sm { padding: 4px 6px; font-size: 14px; }
-    &--md { padding: 6px 8px; font-size: 16px; }
-    &--lg { padding: 8px 12px; font-size: 18px; }
+    &--sm {
+      padding: 4px 6px;
+      font-size: 14px;
+    }
+    &--md {
+      padding: 6px 8px;
+      font-size: 16px;
+    }
+    &--lg {
+      padding: 8px 12px;
+      font-size: 18px;
+    }
   }
 }
 </style>

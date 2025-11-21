@@ -7,30 +7,32 @@
       @edit="$emit('edit', $event)"
       @delete="$emit('delete', $event)"
     />
-    
+
     <div v-if="notes.length === 0" class="empty-state">
       <p>У вас пока нет заметок</p>
-      <p class="empty-state__hint">Создайте первую заметку, нажав на кнопку выше</p>
+      <p class="empty-state__hint">
+        Создайте первую заметку, нажав на кнопку выше
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 interface Props {
-  notes: Note[]
+  notes: Note[];
 }
 
-defineProps<Props>()
+defineProps<Props>();
 defineEmits<{
-  edit: [id: string]
-  delete: [id: string]
-}>()
+  edit: [id: string];
+  delete: [id: string];
+}>();
 </script>
 
 <style scoped lang="scss">
 .notes-container {
   flex: 1;
-  overflow-y: auto; 
+  overflow-y: auto;
   min-height: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -51,7 +53,7 @@ defineEmits<{
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
+
   &__hint {
     font-size: 0.9rem;
     margin-top: 0.5rem;

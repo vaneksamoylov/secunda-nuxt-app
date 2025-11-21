@@ -13,7 +13,6 @@
       class="todo-input"
       :class="{ completed: todo.done }"
       @input="emit('updateText', textValue)"
-      @keyup.enter="emit('enterPress', $event)"
     />
     <UiButton variant="danger" @click="emit('remove')">X</UiButton>
   </div>
@@ -21,8 +20,8 @@
 
 <script setup lang="ts">
 const props = defineProps<{
-  todo: Todo
-}>()
+  todo: Todo;
+}>();
 
 watch(
   props,
@@ -39,11 +38,11 @@ watch(
 );
 
 const emit = defineEmits<{
-  'remove': []
-  'updateCheckbox': [value: boolean]
-  'updateText': [value: string]
-  'enterPress': [event: KeyboardEvent]
-}>()
+  remove: [];
+  updateCheckbox: [value: boolean];
+  updateText: [value: string];
+  enterPress: [event: KeyboardEvent];
+}>();
 
 const checkboxValue = ref(props.todo.done);
 const textValue = ref(props.todo.text);

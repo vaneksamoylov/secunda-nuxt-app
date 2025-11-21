@@ -11,7 +11,7 @@
         </UiButton>
       </div>
     </div>
-    
+
     <div class="note-card__todos">
       <div
         v-for="todo in visibleTodos"
@@ -24,10 +24,10 @@
           :checked="todo.done"
           disabled
           class="todo-preview__checkbox"
-        >
+        />
         <span class="todo-preview__text">{{ todo.text }}</span>
       </div>
-      
+
       <div v-if="hasMoreTodos" class="note-card__more">
         + еще {{ note.todos.length - 3 }} задач
       </div>
@@ -37,48 +37,44 @@
 
 <script setup lang="ts">
 interface Props {
-  note: Note
+  note: Note;
 }
 
 // TODO: Заменить на Note
-const props = defineProps<Props>()
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
-  edit: [id: string]
-  delete: [id: string]
-  click: [id: string]
-}>()
+  edit: [id: string];
+  delete: [id: string];
+  click: [id: string];
+}>();
 
-const visibleTodos = computed(() => 
-  props.note.todos.slice(0, 3)
-)
+const visibleTodos = computed(() => props.note.todos.slice(0, 3));
 
-const hasMoreTodos = computed(() => 
-  props.note.todos.length > 3
-)
+const hasMoreTodos = computed(() => props.note.todos.length > 3);
 
 const handleClick = () => {
   if (props.note.id) {
-    emit('click', props.note.id)
+    emit("click", props.note.id);
   }
-}
+};
 
 const editNote = () => {
   if (props.note.id) {
-    emit('edit', props.note.id)
+    emit("edit", props.note.id);
   }
-}
+};
 
 const confirmDelete = () => {
   if (props.note.id) {
-    emit('delete', props.note.id)
+    emit("delete", props.note.id);
   }
-}
+};
 
 const formatDate = (date: Date) => {
   // TODO: Убрать форматтинг
-  return new Date(date).toLocaleDateString('ru-RU')
-}
+  return new Date(date).toLocaleDateString("ru-RU");
+};
 </script>
 
 <style scoped lang="scss">
@@ -89,12 +85,12 @@ const formatDate = (date: Date) => {
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-  
+
   &__header {
     display: flex;
     justify-content: space-between;
@@ -102,7 +98,7 @@ const formatDate = (date: Date) => {
     gap: 10px;
     margin-bottom: 1rem;
   }
-  
+
   &__title {
     margin: 0;
     color: var(--text-primary);
@@ -112,33 +108,33 @@ const formatDate = (date: Date) => {
     white-space: nowrap;
     overflow: hidden;
   }
-  
+
   &__actions {
     display: flex;
     gap: 0.5rem;
     transition: opacity 0.2s ease;
   }
-  
+
   &:hover &__actions {
     opacity: 1;
   }
-  
+
   &__todos {
     space-y: 0.5rem;
   }
-  
+
   &__more {
     color: var(--text-secondary);
     font-size: 0.9rem;
     margin-top: 0.5rem;
   }
-  
+
   &__meta {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 1px solid var(--border-color);
   }
-  
+
   &__date {
     color: var(--text-secondary);
     font-size: 0.8rem;
@@ -150,16 +146,16 @@ const formatDate = (date: Date) => {
   align-items: center;
   gap: 0.5rem;
   padding: 0.25rem 0;
-  
+
   &--done &__text {
     text-decoration: line-through;
     color: var(--text-secondary);
   }
-  
+
   &__checkbox {
     margin: 0;
   }
-  
+
   &__text {
     color: var(--text-primary);
     font-size: 0.9rem;

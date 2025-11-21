@@ -1,43 +1,79 @@
 <template>
   <div class="note-editor">
     <div class="note-editor__button-container">
-      <UiButton variant="default" class="note-editor__button-back" @click="goBack">Назад</UiButton>
-      <UiButton variant="apply" class="note-editor__button-save" @click="saveNote">
+      <UiButton
+        variant="default"
+        class="note-editor__button-back"
+        @click="goBack"
+        >Назад</UiButton
+      >
+      <UiButton
+        variant="apply"
+        class="note-editor__button-save"
+        @click="saveNote"
+      >
         <UiIconSave currentColor="#fff" width="24" height="24" />
       </UiButton>
-      <UiButton variant="danger" class="note-editor__button-save" :disabled="!route.params.id"
-        @click="resetToInitialState">
+      <UiButton
+        variant="danger"
+        class="note-editor__button-save"
+        :disabled="!route.params.id"
+        @click="resetToInitialState"
+      >
         Отменить изменения
       </UiButton>
-      <UiButton variant="danger" size="sm" @click="confirmDelete" :disabled="!route.params.id">
+      <UiButton
+        variant="danger"
+        size="sm"
+        @click="confirmDelete"
+        :disabled="!route.params.id"
+      >
         <UiIconDelete currentColor="#fff" width="24" height="24" />
       </UiButton>
-      <UiButton class="note-editor__button-undo" :disabled="!noteEditStore.history.canUndo"
-        @click="noteEditStore.history.undo">
+      <UiButton
+        class="note-editor__button-undo"
+        :disabled="!noteEditStore.history.canUndo"
+        @click="noteEditStore.history.undo"
+      >
         <UiIconUndo currentColor="#fff" width="24" height="24" />
       </UiButton>
-      <UiButton class="note-editor__button-redo" :disabled="!noteEditStore.history.canRedo"
-        @click="noteEditStore.history.redo">
+      <UiButton
+        class="note-editor__button-redo"
+        :disabled="!noteEditStore.history.canRedo"
+        @click="noteEditStore.history.redo"
+      >
         <UiIconRedo currentColor="#fff" width="24" height="24" />
       </UiButton>
     </div>
     <div v-if="newLocalNote" class="editor-container">
       <!-- Заголовок заметки -->
-      <input v-model="newLocalNote.title" type="text" placeholder="Название заметки" class="title-input" />
+      <input
+        v-model="newLocalNote.title"
+        type="text"
+        placeholder="Название заметки"
+        class="title-input"
+      />
 
       <!-- Список todos -->
       <div class="todos-section">
         <h3>Задачи:</h3>
-        <TodoItem v-for="(todo, index) in todos" :key="todo.id" class="todo-item" :todo="todo"
-          @remove="removeTodo(index)" @updateCheckbox="
+        <TodoItem
+          v-for="(todo, index) in todos"
+          :key="todo.id"
+          class="todo-item"
+          :todo="todo"
+          @remove="removeTodo(index)"
+          @updateCheckbox="
             (value) => {
               todo.done = value;
             }
-          " @updateText="
+          "
+          @updateText="
             (value) => {
               noteEditStore.setTodoText(index, value);
             }
-          " @enterPress="handleEnterPress"></TodoItem>
+          "
+        ></TodoItem>
 
         <!-- Кнопка добавления новой задачи -->
         <UiButton @click="addTodo" class="add-todo-btn">
@@ -61,7 +97,7 @@ const notesStore = useNotesStore();
 const noteEditStore = useNoteEditStore();
 const showModal = ref(false);
 
-const modalText = ref('');
+const modalText = ref("");
 const modalButtons = ref();
 
 // Реактивная копия заметки для редактирования
@@ -138,17 +174,17 @@ function closeModal() {
 function confirmDelete() {
   showModal.value = true;
 
-  modalText.value = 'Вы уверены, что хотите удалить эту заметку?';
+  modalText.value = "Вы уверены, что хотите удалить эту заметку?";
   modalButtons.value = [
     {
-      text: 'Удалить',
+      text: "Удалить",
       action: () => {
         deleteNote();
         closeModal();
       },
     },
     {
-      text: 'Отмена',
+      text: "Отмена",
       action: () => {
         closeModal();
       },
@@ -160,22 +196,23 @@ function saveNote() {
   if (newLocalNote.value) {
     const noteToSave = deepClone(newLocalNote.value);
 
-    if (noteToSave.id === '' && noteToSave.title !== '') {
+    if (noteToSave.id === "" && noteToSave.title !== "") {
       noteToSave.id = notesStore.generateId();
       noteToSave.updatedAt = new Date();
       notesStore.createNote(noteToSave);
       navigateTo(`/edit/${noteToSave.id}`);
     }
 
-    if (noteToSave.id === '' && noteToSave.title === '') {
+    if (noteToSave.id === "" && noteToSave.title === "") {
       showModal.value = true;
 
-      modalText.value = 'Заметка пустая. Добавьте заголовок, чтобы сохранить заметку.';
+      modalText.value =
+        "Заметка пустая. Добавьте заголовок, чтобы сохранить заметку.";
       modalButtons.value = [
         {
-          text: 'Ок',
+          text: "Ок",
           action: () => {
-            closeModal()
+            closeModal();
           },
         },
       ];
@@ -183,7 +220,7 @@ function saveNote() {
       return;
     }
 
-    if (noteToSave.id !== '' && noteToSave.title !== '') {
+    if (noteToSave.id !== "" && noteToSave.title !== "") {
       notesStore.updateNote(noteToSave.id, noteToSave);
     }
   }
@@ -194,42 +231,45 @@ function saveNote() {
 }
 
 function goBack() {
-  if (JSON.stringify(initialNote.value) !== JSON.stringify(newLocalNote.value)) {
+  if (
+    JSON.stringify(initialNote.value) !== JSON.stringify(newLocalNote.value)
+  ) {
     showModal.value = true;
-    modalText.value = 'У вас есть несохраненные изменения. Вы уверены, что хотите вернуться назад?';
+    modalText.value =
+      "У вас есть несохраненные изменения. Вы уверены, что хотите вернуться назад?";
     modalButtons.value = [
       {
-        text: 'Да',
+        text: "Да",
         action: () => {
           closeModal();
-          navigateTo('/');
+          navigateTo("/");
         },
       },
       {
-        text: 'Отмена',
+        text: "Отмена",
         action: () => {
           closeModal();
         },
       },
     ];
   } else {
-    navigateTo('/')
+    navigateTo("/");
   }
 }
 
 function resetToInitialState() {
   showModal.value = true;
-  modalText.value = 'Вы уверены, что хотите отменить все изменения?';
+  modalText.value = "Вы уверены, что хотите отменить все изменения?";
   modalButtons.value = [
     {
-      text: 'Да',
+      text: "Да",
       action: () => {
         loadCurrentNote();
         closeModal();
       },
     },
     {
-      text: 'Отмена',
+      text: "Отмена",
       action: () => {
         closeModal();
       },
@@ -239,21 +279,21 @@ function resetToInitialState() {
 
 function deleteNote() {
   notesStore.deleteNote(route.params.id as string);
-  navigateTo('/');
+  navigateTo("/");
 }
 
 const handleEnterPress = (event: Event) => {
-  addTodo()
+  addTodo();
 
-  const target = event.target as HTMLInputElement
-  const nextElement = target.nextElementSibling as HTMLInputElement | null
+  const target = event.target as HTMLInputElement;
+  const nextElement = target.nextElementSibling as HTMLInputElement | null;
 
   nextTick(() => {
-    if (nextElement && 'focus' in nextElement) {
-      nextElement.focus()
+    if (nextElement && "focus" in nextElement) {
+      nextElement.focus();
     }
-  })
-}
+  });
+};
 </script>
 
 <style scoped lang="scss">

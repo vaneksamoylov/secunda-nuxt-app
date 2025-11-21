@@ -1,6 +1,6 @@
 import { useRefHistory } from "@vueuse/core";
 
-const STORAGE_KEY = 'noteEdit';
+const STORAGE_KEY = "noteEdit";
 
 const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
@@ -40,5 +40,12 @@ export const useNoteEditStore = defineStore(STORAGE_KEY, () => {
     }
   }
 
-  return { localNote, loadCurrentNote, addTodo, removeTodo, setTodoText, history };
+  return {
+    localNote,
+    loadCurrentNote,
+    addTodo,
+    removeTodo,
+    setTodoText,
+    history,
+  };
 });
