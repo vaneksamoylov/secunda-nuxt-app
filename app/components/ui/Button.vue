@@ -15,8 +15,8 @@
 
 <script setup lang="ts">
 interface Props {
-  variant?: "default" | "transparent" | "apply" | "danger";
-  size?: "sm" | "md" | "lg";
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   disabled?: boolean;
 }
 
@@ -46,6 +46,17 @@ const handleClick = (event: MouseEvent) => {
   transition: all 0.2s ease;
   text-transform: lowercase;
 
+  &--primary {
+    background-color: var(--default-button-color);
+    color: var(--default-text-color);
+  }
+
+  &--secondary {
+    background-color: var(--transparent-button-color);
+    color: var(--transparent-text-color);
+    border: 1px solid var(--text-primary-color);
+  }
+
   &--default {
     background-color: var(--default-button-color);
     color: var(--default-text-color);
@@ -64,6 +75,12 @@ const handleClick = (event: MouseEvent) => {
   &--danger {
     background-color: var(--danger-button-color);
     color: var(--danger-text-color);
+  }
+
+  &--ghost {
+    background-color: transparent;
+    color: var(--text-primary-color);
+    border: none;
   }
 
   &--sm {

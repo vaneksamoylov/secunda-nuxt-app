@@ -1,6 +1,12 @@
 <template>
   <div class="modal">
-    <button class="modal__close-button" @click="$emit('close')">X</button>
+    <button
+      class="modal__close-button"
+      aria-label="Закрыть"
+      @click="$emit('close')"
+    >
+      X
+    </button>
     <div class="modal__text">
       {{ text }}
     </div>
@@ -9,7 +15,7 @@
     </div>
   </div>
 
-  <div class="modal-backdrop"></div>
+  <div class="modal-backdrop" @click="$emit('close')"></div>
 </template>
 
 <script setup lang="ts">

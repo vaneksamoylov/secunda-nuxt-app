@@ -3,7 +3,7 @@ const STORAGE_KEY = "settings";
 export const settingsStore = defineStore(STORAGE_KEY, () => {
   const appTheme = ref<AppTheme>("light");
 
-  // загружает заметки из localStorage при инициализации
+  // загружает настройки из localStorage при инициализации
   function loadFromStorage(): void {
     // Всегда проверяем client-side
     if (import.meta.client) {
@@ -14,19 +14,39 @@ export const settingsStore = defineStore(STORAGE_KEY, () => {
           appTheme.value = parsed.appTheme || "light";
         }
       } catch (e) {
-        console.error("Failed to load settings from storage:", e);
+        if (e instanceof SyntaxError) {
+          console.error(
+            "Failed to parse settings from storage (invalid JSON):",
+            e
+          );
+        } else if (
+          e instanceof DOMException &&
+          e.name === "QuotaExceededError"
+        ) {
+          console.error("LocalStorage quota exceeded");
+        } else {
+          console.error("Failed to load settings from storage:", e);
+        }
       }
     }
   }
 
   function saveToStorage(): void {
     if (import.meta.client) {
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({
-          appTheme: appTheme.value,
-        })
-      );
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            appTheme: appTheme.value,
+          })
+        );
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "QuotaExceededError") {
+          console.error("LocalStorage quota exceeded. Cannot save settings.");
+        } else {
+          console.error("Failed to save settings to storage:", e);
+        }
+      }
     }
   }
 

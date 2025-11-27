@@ -1,13 +1,13 @@
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  modules: ['@pinia/nuxt', '@nuxt/fonts'],
+  modules: ["@pinia/nuxt", "@nuxt/fonts"],
   typescript: {
-    strict: true,        // Включить строгую типизацию
-    typeCheck: true      // Проверка типов при разработке
+    strict: true,
+    typeCheck: true,
   },
   imports: {
-    dirs: ['types/**']   // Авто-импорт типов
+    dirs: ["types/**"],
   },
-  css: ['./app/styles/main.scss'],
-})
+  css: ["./app/styles/main.scss"],
+});

@@ -5,8 +5,7 @@
   </header>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <style scoped lang="scss">
 .app-header {
@@ -15,7 +14,7 @@
   align-items: center;
   padding: 1rem;
   background-color: var(--background-color);
-  
+
   &__logo {
     font-family: Ubuntu;
     font-size: var(--text-size-3xl);

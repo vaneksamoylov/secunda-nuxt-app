@@ -4,10 +4,10 @@
       <h3 class="note-card__title">{{ note.title }}</h3>
       <div class="note-card__actions">
         <UiButton variant="default" size="sm" @click.stop="editNote">
-          <UiIconEdit currentColor="#fff" width="24" height="24" />
+          <UiIconEdit current-color="#fff" width="24" height="24" />
         </UiButton>
         <UiButton variant="danger" size="sm" @click.stop="confirmDelete">
-          <UiIconDelete currentColor="#fff" width="24" height="24" />
+          <UiIconDelete current-color="#fff" width="24" height="24" />
         </UiButton>
       </div>
     </div>
@@ -40,7 +40,6 @@ interface Props {
   note: Note;
 }
 
-// TODO: Заменить на Note
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
@@ -69,11 +68,6 @@ const confirmDelete = () => {
   if (props.note.id) {
     emit("delete", props.note.id);
   }
-};
-
-const formatDate = (date: Date) => {
-  // TODO: Убрать форматтинг
-  return new Date(date).toLocaleDateString("ru-RU");
 };
 </script>
 

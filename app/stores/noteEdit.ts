@@ -2,8 +2,6 @@ import { useRefHistory } from "@vueuse/core";
 
 const STORAGE_KEY = "noteEdit";
 
-const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
-
 export const useNoteEditStore = defineStore(STORAGE_KEY, () => {
   const localNote = ref<Note | null>(null);
   const history = useRefHistory(localNote, {
@@ -17,8 +15,9 @@ export const useNoteEditStore = defineStore(STORAGE_KEY, () => {
 
   function addTodo() {
     if (localNote.value) {
+      // Используем комбинацию timestamp и random для избежания коллизий
       const newTodo: Todo = {
-        id: String(Date.now()), // Простой способ генерации ID
+        id: `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         text: "",
         done: false,
         createdAt: new Date(),

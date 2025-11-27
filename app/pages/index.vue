@@ -5,7 +5,8 @@
 
   <UiModal v-if="showModal" :text="modalText" @close="closeModal">
     <UiButton
-      v-for="btn in modalButtons"
+      v-for="(btn, index) in modalButtons"
+      :key="index"
       :variant="btn.variant"
       @click="btn.action()"
       >{{ btn.text }}</UiButton
@@ -15,9 +16,8 @@
 
 <script setup lang="ts">
 const notesStore = useNotesStore();
-const showModal = ref(false);
-const modalText = ref();
-const modalButtons = ref();
+const { showModal, modalText, modalButtons, openModal, closeModal } =
+  useModal();
 
 onMounted(() => {
   notesStore.loadFromStorage();
@@ -30,10 +30,7 @@ function editNote(id: string) {
 }
 
 function confirmDeleteNote(id: string) {
-  showModal.value = true;
-
-  modalText.value = "Вы уверены, что хотите удалить?";
-  modalButtons.value = [
+  openModal("Вы уверены, что хотите удалить?", [
     {
       text: "Удалить",
       variant: "danger",
@@ -49,14 +46,7 @@ function confirmDeleteNote(id: string) {
         closeModal();
       },
     },
-  ];
-}
-
-function closeModal() {
-  showModal.value = false;
-
-  modalText.value = "";
-  modalButtons.value = [];
+  ]);
 }
 </script>
 

@@ -12,7 +12,7 @@
         class="note-editor__button-save"
         @click="saveNote"
       >
-        <UiIconSave currentColor="#fff" width="24" height="24" />
+        <UiIconSave current-color="#fff" width="24" height="24" />
       </UiButton>
       <UiButton
         variant="danger"
@@ -25,24 +25,24 @@
       <UiButton
         variant="danger"
         size="sm"
-        @click="confirmDelete"
         :disabled="!route.params.id"
+        @click="confirmDelete"
       >
-        <UiIconDelete currentColor="#fff" width="24" height="24" />
+        <UiIconDelete current-color="#fff" width="24" height="24" />
       </UiButton>
       <UiButton
         class="note-editor__button-undo"
         :disabled="!noteEditStore.history.canUndo"
         @click="noteEditStore.history.undo"
       >
-        <UiIconUndo currentColor="#fff" width="24" height="24" />
+        <UiIconUndo current-color="#fff" width="24" height="24" />
       </UiButton>
       <UiButton
         class="note-editor__button-redo"
         :disabled="!noteEditStore.history.canRedo"
         @click="noteEditStore.history.redo"
       >
-        <UiIconRedo currentColor="#fff" width="24" height="24" />
+        <UiIconRedo current-color="#fff" width="24" height="24" />
       </UiButton>
     </div>
     <div v-if="newLocalNote" class="editor-container">
@@ -63,12 +63,12 @@
           class="todo-item"
           :todo="todo"
           @remove="removeTodo(index)"
-          @updateCheckbox="
+          @update-checkbox="
             (value) => {
               todo.done = value;
             }
           "
-          @updateText="
+          @update-text="
             (value) => {
               noteEditStore.setTodoText(index, value);
             }
@@ -76,7 +76,7 @@
         ></TodoItem>
 
         <!-- Кнопка добавления новой задачи -->
-        <UiButton @click="addTodo" class="add-todo-btn">
+        <UiButton class="add-todo-btn" @click="addTodo">
           + Добавить задачу
         </UiButton>
       </div>
@@ -84,29 +84,52 @@
   </div>
 
   <UiModal v-if="showModal" :text="modalText" @close="closeModal">
-    <UiButton v-for="btn in modalButtons" @click="btn.action()">{{
-      btn.text
-    }}</UiButton>
+    <UiButton
+      v-for="btn in modalButtons"
+      :key="btn.text"
+      :variant="btn.variant"
+      @click="btn.action()"
+    >
+      {{ btn.text }}
+    </UiButton>
   </UiModal>
 </template>
 
 <script setup lang="ts">
 const route = useRoute();
-const router = useRouter();
 const notesStore = useNotesStore();
 const noteEditStore = useNoteEditStore();
-const showModal = ref(false);
-
-const modalText = ref("");
-const modalButtons = ref();
+const { showModal, modalText, modalButtons, openModal, closeModal } =
+  useModal();
 
 // Реактивная копия заметки для редактирования
 const initialNote = ref<Note | null>(null);
 
 const newLocalNote = storeToRefs(noteEditStore).localNote;
-const todos = ref<Array<Todo>>([]);
 
-const deepClone = <T>(obj: T): T => JSON.parse(JSON.stringify(obj));
+// Используем computed вместо watch для лучшей производительности
+const todos = computed(() => newLocalNote.value?.todos ?? []);
+
+// Keyboard shortcuts для undo/redo
+const handleKeyDown = (event: KeyboardEvent) => {
+  // Ctrl+Z для undo
+  if (event.ctrlKey && event.key === "z" && !event.shiftKey) {
+    event.preventDefault();
+    if (noteEditStore.history.canUndo) {
+      noteEditStore.history.undo();
+    }
+  }
+  // Shift+Ctrl+Z или Ctrl+Y для redo
+  if (
+    (event.ctrlKey && event.shiftKey && event.key === "z") ||
+    (event.ctrlKey && event.key === "y")
+  ) {
+    event.preventDefault();
+    if (noteEditStore.history.canRedo) {
+      noteEditStore.history.redo();
+    }
+  }
+};
 
 // Загружаем данные при монтировании
 onMounted(() => {
@@ -117,21 +140,23 @@ onMounted(() => {
   } else {
     loadNewNote();
   }
+
+  window.addEventListener("keydown", handleKeyDown);
 });
 
-// Загружаем текущую заметку когда загрузилось хранилище или изменился ID
-watchEffect(() => {
-  if (notesStore.notes.length > 0 || route.params.id) {
-    loadCurrentNote();
-  }
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleKeyDown);
 });
 
+// Оптимизированный watch для загрузки заметки
 watch(
-  newLocalNote,
-  () => {
-    todos.value = newLocalNote.value?.todos ?? [];
+  () => [route.params.id, notesStore.isLoaded],
+  ([id, isLoaded]) => {
+    if (isLoaded && id) {
+      loadCurrentNote();
+    }
   },
-  { deep: true }
+  { immediate: true }
 );
 
 async function loadCurrentNote() {
@@ -166,18 +191,11 @@ function removeTodo(index: number) {
   noteEditStore.removeTodo(index);
 }
 
-function closeModal() {
-  showModal.value = false;
-  modalButtons.value = [];
-}
-
 function confirmDelete() {
-  showModal.value = true;
-
-  modalText.value = "Вы уверены, что хотите удалить эту заметку?";
-  modalButtons.value = [
+  openModal("Вы уверены, что хотите удалить эту заметку?", [
     {
       text: "Удалить",
+      variant: "danger" as const,
       action: () => {
         deleteNote();
         closeModal();
@@ -185,11 +203,12 @@ function confirmDelete() {
     },
     {
       text: "Отмена",
+      variant: "default" as const,
       action: () => {
         closeModal();
       },
     },
-  ];
+  ]);
 }
 
 function saveNote() {
@@ -204,18 +223,18 @@ function saveNote() {
     }
 
     if (noteToSave.id === "" && noteToSave.title === "") {
-      showModal.value = true;
-
-      modalText.value =
-        "Заметка пустая. Добавьте заголовок, чтобы сохранить заметку.";
-      modalButtons.value = [
-        {
-          text: "Ок",
-          action: () => {
-            closeModal();
+      openModal(
+        "Заметка пустая. Добавьте заголовок, чтобы сохранить заметку.",
+        [
+          {
+            text: "Ок",
+            variant: "default" as const,
+            action: () => {
+              closeModal();
+            },
           },
-        },
-      ];
+        ]
+      );
 
       return;
     }
@@ -225,44 +244,51 @@ function saveNote() {
     }
   }
 
-  if (newLocalNote.value !== initialNote.value) {
+  if (hasChanges.value) {
     loadCurrentNote();
   }
 }
 
+// Computed для проверки изменений
+const hasChanges = computed(() => {
+  if (!newLocalNote.value || !initialNote.value) return false;
+  return (
+    JSON.stringify(newLocalNote.value) !== JSON.stringify(initialNote.value)
+  );
+});
+
 function goBack() {
-  if (
-    JSON.stringify(initialNote.value) !== JSON.stringify(newLocalNote.value)
-  ) {
-    showModal.value = true;
-    modalText.value =
-      "У вас есть несохраненные изменения. Вы уверены, что хотите вернуться назад?";
-    modalButtons.value = [
-      {
-        text: "Да",
-        action: () => {
-          closeModal();
-          navigateTo("/");
+  if (hasChanges.value) {
+    openModal(
+      "У вас есть несохраненные изменения. Вы уверены, что хотите вернуться назад?",
+      [
+        {
+          text: "Да",
+          variant: "default" as const,
+          action: () => {
+            closeModal();
+            navigateTo("/");
+          },
         },
-      },
-      {
-        text: "Отмена",
-        action: () => {
-          closeModal();
+        {
+          text: "Отмена",
+          variant: "default" as const,
+          action: () => {
+            closeModal();
+          },
         },
-      },
-    ];
+      ]
+    );
   } else {
     navigateTo("/");
   }
 }
 
 function resetToInitialState() {
-  showModal.value = true;
-  modalText.value = "Вы уверены, что хотите отменить все изменения?";
-  modalButtons.value = [
+  openModal("Вы уверены, что хотите отменить все изменения?", [
     {
       text: "Да",
+      variant: "default" as const,
       action: () => {
         loadCurrentNote();
         closeModal();
@@ -270,30 +296,18 @@ function resetToInitialState() {
     },
     {
       text: "Отмена",
+      variant: "default" as const,
       action: () => {
         closeModal();
       },
     },
-  ];
+  ]);
 }
 
 function deleteNote() {
   notesStore.deleteNote(route.params.id as string);
   navigateTo("/");
 }
-
-const handleEnterPress = (event: Event) => {
-  addTodo();
-
-  const target = event.target as HTMLInputElement;
-  const nextElement = target.nextElementSibling as HTMLInputElement | null;
-
-  nextTick(() => {
-    if (nextElement && "focus" in nextElement) {
-      nextElement.focus();
-    }
-  });
-};
 </script>
 
 <style scoped lang="scss">

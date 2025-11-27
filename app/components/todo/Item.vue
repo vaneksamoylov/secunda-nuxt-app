@@ -23,20 +23,6 @@ const props = defineProps<{
   todo: Todo;
 }>();
 
-watch(
-  props,
-  () => {
-    if (textValue.value != props.todo.text) {
-      textValue.value = props.todo.text;
-    }
-
-    if (checkboxValue.value != props.todo.done) {
-      checkboxValue.value = props.todo.done;
-    }
-  },
-  { deep: true }
-);
-
 const emit = defineEmits<{
   remove: [];
   updateCheckbox: [value: boolean];
@@ -46,6 +32,25 @@ const emit = defineEmits<{
 
 const checkboxValue = ref(props.todo.done);
 const textValue = ref(props.todo.text);
+
+// Используем watch на конкретные свойства для лучшей производительности
+watch(
+  () => props.todo.text,
+  (newText) => {
+    if (textValue.value !== newText) {
+      textValue.value = newText;
+    }
+  }
+);
+
+watch(
+  () => props.todo.done,
+  (newDone) => {
+    if (checkboxValue.value !== newDone) {
+      checkboxValue.value = newDone;
+    }
+  }
+);
 </script>
 
 <style scoped lang="scss">

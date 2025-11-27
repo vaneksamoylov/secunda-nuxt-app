@@ -1,8 +1,8 @@
 <template>
   <div class="notes-container">
     <NoteCard
-      v-for="(note, index) in notes"
-      :key="index"
+      v-for="note in notes"
+      :key="note.id"
       :note="note"
       @edit="$emit('edit', $event)"
       @delete="$emit('delete', $event)"

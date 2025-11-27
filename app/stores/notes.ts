@@ -23,11 +23,29 @@ export const useNotesStore = defineStore(STORAGE_KEY, () => {
               updatedAt: new Date(todo.updatedAt),
             })),
           }));
-          nextId.value++;
+
+          // Находим максимальный ID и устанавливаем nextId
+          const maxId = notes.value.reduce((max, note) => {
+            const idNum = parseInt(note.id) || 0;
+            return idNum > max ? idNum : max;
+          }, 0);
+          nextId.value = maxId + 1;
         }
         isLoaded.value = true;
       } catch (e) {
-        console.error("Failed to load notes from storage:", e);
+        if (e instanceof SyntaxError) {
+          console.error(
+            "Failed to parse notes from storage (invalid JSON):",
+            e
+          );
+        } else if (
+          e instanceof DOMException &&
+          e.name === "QuotaExceededError"
+        ) {
+          console.error("LocalStorage quota exceeded");
+        } else {
+          console.error("Failed to load notes from storage:", e);
+        }
         isLoaded.value = true;
       }
     }
@@ -39,7 +57,16 @@ export const useNotesStore = defineStore(STORAGE_KEY, () => {
 
   function saveToStorage(): void {
     if (import.meta.client) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes.value));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(notes.value));
+      } catch (e) {
+        if (e instanceof DOMException && e.name === "QuotaExceededError") {
+          console.error("LocalStorage quota exceeded. Cannot save notes.");
+          // Можно показать уведомление пользователю
+        } else {
+          console.error("Failed to save notes to storage:", e);
+        }
+      }
     }
   }
 
