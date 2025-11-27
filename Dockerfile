@@ -1,4 +1,4 @@
-FROM node:lts as build-stage
+FROM node:lts AS build-stage
 
 WORKDIR /nuxtapp
 
@@ -8,9 +8,11 @@ RUN npm ci
 
 COPY . .
 
+RUN npx nuxi prepare
+
 RUN npm run build
 
-FROM node:lts as prod-stage
+FROM node:lts AS prod-stage
 
 WORKDIR /nuxtapp
 
@@ -21,4 +23,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-CMD [ "node", ".output/server/index.mjs" ]
+CMD ["node", ".output/server/index.mjs"]
