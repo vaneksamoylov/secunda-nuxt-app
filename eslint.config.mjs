@@ -35,6 +35,7 @@ export default [
         watch: "readonly",
         watchEffect: "readonly",
         onMounted: "readonly",
+        onUnmounted: "readonly",
         nextTick: "readonly",
         defineStore: "readonly",
         // Types
