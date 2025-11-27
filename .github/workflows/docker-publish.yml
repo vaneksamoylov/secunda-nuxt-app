@@ -3,7 +3,7 @@ name: Build & Publish Docker image (Nuxt)
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build-and-publish:
